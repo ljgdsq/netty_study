@@ -1,0 +1,16 @@
+syntax="proto2";
+
+package demo;
+option java_package = "com.zsl.demo.protobuf";
+
+option java_outer_classname = "Student";
+option optimize_for =SPEED;
+
+
+
+message StudentInfo{
+    required int32 id=1;
+    optional  string name=2;
+    optional bool married=3;
+    repeated string phone=4;
+}
