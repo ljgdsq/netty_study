@@ -10,7 +10,6 @@ public class SimpleMessageDecoder extends ReplayingDecoder<Void> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
-
         int length=in.readInt();
         byte[]data=new byte[length];
         in.readBytes(data,0,length);

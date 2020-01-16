@@ -1,37 +1,40 @@
-package com.zsl.demo.myprotocol;
+package com.zsl.demo.im.server;
 
+import com.zsl.demo.im.Handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class SimpleMessageServer {
+public class SampleServer {
     public static void main(String[] args) {
         EventLoopGroup parent = new NioEventLoopGroup();
         EventLoopGroup child = new NioEventLoopGroup();
-//        parent.schedule()
 
-
+        int port = 9000;
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(parent, child).channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new SimpleMessageDecoder())
-                                .addLast(new SimpleMessageEncoder())
-                                .addLast(new SimpleServerHandler());
+                        ch.pipeline()
+                                .addLast(new Spliter())
+                                .addLast(new PacketDecoder())
+                                .addLast(new PacketEncoder())
+                                .addLast(new LoginRequestHandler())
+                                .addLast(new AuthHandler())
+                                .addLast(new MessageRequestHandler())
+                                .addLast(new ServerHandler());
                     }
                 });
-
-        ChannelFuture channelFuture = bootstrap.bind(9000);
         try {
-            ChannelFuture future = channelFuture.sync();
+            ChannelFuture future = bootstrap.bind(port).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
+            System.out.println("bootstrap error!");
             e.printStackTrace();
         } finally {
             try {
@@ -41,6 +44,5 @@ public class SimpleMessageServer {
                 e.printStackTrace();
             }
         }
-
     }
 }
