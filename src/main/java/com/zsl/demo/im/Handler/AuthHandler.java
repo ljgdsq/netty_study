@@ -20,7 +20,7 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        boolean login = LoginUtil.isLogin(ctx.channel());
+//        boolean login = LoginUtil.isLogin(ctx.channel());
 //        if (login)
 //        {
 //            System.out.println("用户登录验证通过 AuthHandler handlerRemoved!");

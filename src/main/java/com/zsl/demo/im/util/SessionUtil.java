@@ -3,6 +3,7 @@ package com.zsl.demo.im.util;
 import com.zsl.demo.im.Session;
 import com.zsl.demo.im.attribute.Attributes;
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +13,7 @@ public class SessionUtil {
     }
 
     private static final Map<Integer, Channel> userChannelMap = new ConcurrentHashMap<>();
+    private static final Map<Integer, ChannelGroup> chatGroupMap = new ConcurrentHashMap<>();
 
     public static void bindSession(Session session, Channel channel) {
         userChannelMap.put(session.getId(), channel);
@@ -41,4 +43,14 @@ public class SessionUtil {
         return userChannelMap.get(userId);
     }
 
+
+    public static ChannelGroup getChannelGroup(int groupId)
+    {
+        return chatGroupMap.get(groupId);
+    }
+
+    public static void bindChannelGroup(int groupId,ChannelGroup channelGroup)
+    {
+        chatGroupMap.put(groupId,channelGroup);
+    }
 }

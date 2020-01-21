@@ -17,7 +17,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
         LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
         if (validate(loginRequest)) {
-            System.out.println("["+loginRequest.getUserName()+"]登录成功!");
+            System.out.println("["+loginRequest.getUserName()+",id="+loginRequest.getUserId()+"]登录成功!");
             loginResponsePacket.setSuccess(true);
             LoginUtil.setLogging(ctx.channel(), true);
             SessionUtil.bindSession(new Session(loginRequest.getUserId(), loginRequest.getUserName()),ctx.channel());

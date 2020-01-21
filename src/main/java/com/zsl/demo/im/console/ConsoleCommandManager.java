@@ -13,12 +13,14 @@ public class ConsoleCommandManager implements ConsoleCommand {
         consoleCommandMap = new HashMap<>();
 //        consoleCommandMap.put("sendToUser",)
         consoleCommandMap.put("createGroup", new CreateGroupConsoleCommand());
+        consoleCommandMap.put("sendToUser", new SendToUserConsoleCommand());
+        consoleCommandMap.put("joinGroup", new JoinGroupConsoleCommand());
 
     }
 
     @Override
     public void exec(Scanner scanner, Channel channel) {
-        String command = scanner.next();
+        String command = scanner.nextLine();
         ConsoleCommand consoleCommand = consoleCommandMap.get(command);
         if (consoleCommand != null) {
             consoleCommand.exec(scanner,channel);

@@ -21,12 +21,16 @@ public class SampleServer {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline()
+                                .addLast(new IMIdleStateHandler())
                                 .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new PacketEncoder())
+                                .addLast(new HeartBeatRequestHandler())
                                 .addLast(new LoginRequestHandler())
                                 .addLast(new AuthHandler())
                                 .addLast(new MessageRequestHandler())
+                                .addLast(new CreateGroupRequestHandler())
+                                .addLast(new JoinGroupRequestHandler())
                                 .addLast(new ServerHandler());
                     }
                 });

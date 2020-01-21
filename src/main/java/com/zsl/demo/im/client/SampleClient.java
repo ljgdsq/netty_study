@@ -1,9 +1,8 @@
 package com.zsl.demo.im.client;
 
 import com.zsl.demo.im.Handler.*;
-import com.zsl.demo.im.protocol.request.LoginRequest;
-import com.zsl.demo.im.protocol.request.MessageRequest;
-import com.zsl.demo.im.util.SessionUtil;
+import com.zsl.demo.im.console.ConsoleCommandManager;
+import com.zsl.demo.im.console.LoginConsoleCommand;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -30,7 +29,10 @@ public class SampleClient {
                                 .addLast(new PacketDecoder())
                                 .addLast(new PacketEncoder())
                                 .addLast(new LoginResponseHandler())
+                                .addLast(new HeartBeatTimerSender())
                                 .addLast(new MessageResponseHandler())
+                                .addLast(new CreateGroupResponseHandler())
+                                .addLast(new JoinGroupResponseHandler())
                                 .addLast(new ClientHandler());
                     }
                 });
@@ -64,20 +66,14 @@ public class SampleClient {
 //                channelFuture.channel().writeAndFlush(data);
 //
 //            }
-            LoginRequest loginRequest = new LoginRequest();
+            ConsoleCommandManager consoleCommandManager=new ConsoleCommandManager();
+            LoginConsoleCommand loginConsoleCommand=new LoginConsoleCommand();
             Scanner scanner = new Scanner(System.in);
             Channel channel = channelFuture.channel();
             boolean isLogin=false;
             while (true) {
                 if (!isLogin) {
-                    System.out.println("请输入用户名:");
-                    String userName = scanner.nextLine();
-                    System.out.println("请输入密码:");
-                    String pwd = scanner.nextLine();
-                    loginRequest.setUserId(channel.hashCode());
-                    loginRequest.setUserName(userName);
-                    loginRequest.setPwd(pwd);
-                    channel.writeAndFlush(loginRequest);
+                    loginConsoleCommand.exec(scanner,channel);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -85,12 +81,7 @@ public class SampleClient {
                     }
                     isLogin=true;
                 } else {
-                    MessageRequest messageRequest = new MessageRequest();
-                    System.out.println("发送给ID:");
-                    messageRequest.setToUserId(Integer.parseInt(scanner.nextLine()));
-                    System.out.println("输入消息:");
-                    messageRequest.setMessage(scanner.nextLine());
-                    channel.writeAndFlush(messageRequest);
+                    consoleCommandManager.exec(scanner,channel);
                 }
 
             }

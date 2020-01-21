@@ -9,7 +9,7 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
     protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket loginResponsePacket) throws Exception {
             if (loginResponsePacket.isSuccess())
             {
-                System.out.println("登录成功!");
+                System.out.println("[id="+loginResponsePacket.getUserId()+"]登录成功!");
             }else {
                 System.out.println("登录失败!原因:"+loginResponsePacket.getReason());
             }

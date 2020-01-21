@@ -1,7 +1,7 @@
 package com.zsl.demo.im.protocol;
 
-import com.zsl.demo.im.protocol.request.LoginRequest;
-import com.zsl.demo.im.protocol.request.MessageRequest;
+import com.zsl.demo.im.protocol.request.*;
+import com.zsl.demo.im.protocol.response.CreateGroupResponse;
 import com.zsl.demo.im.protocol.response.LoginResponsePacket;
 import com.zsl.demo.im.protocol.response.MessageResponse;
 import com.zsl.demo.im.serializer.Serializer;
@@ -28,7 +28,7 @@ public class PacketCodec {
         return byteBuf;
     }
 
-    public static ByteBuf encode(Packet packet,ByteBuf byteBuf) {
+    public static ByteBuf encode(Packet packet, ByteBuf byteBuf) {
         byte[] data = serializer.serialize(packet);
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
@@ -51,7 +51,9 @@ public class PacketCodec {
         byte[] byteData = new byte[length];
         byteBuf.readBytes(byteData);
 
-        if (command == Command.LOGIN_REQUEST) {
+        if (command == Command.HEART_BEAT) {
+            return (Packet) serializer.deserialize(HeartBeatPacket.class, byteData);
+        } else if (command == Command.LOGIN_REQUEST) {
             return (Packet) serializer.deserialize(LoginRequest.class, byteData);
         } else if (command == Command.LOGIN_RESPONSE) {
             return (Packet) serializer.deserialize(LoginResponsePacket.class, byteData);
@@ -59,6 +61,14 @@ public class PacketCodec {
             return (Packet) serializer.deserialize(MessageRequest.class, byteData);
         } else if (command == Command.MESSAGE_RESPONSE) {
             return (Packet) serializer.deserialize(MessageResponse.class, byteData);
+        } else if (command == Command.CREATE_GROUP_REQUEST) {
+            return (Packet) serializer.deserialize(CreateGroupRequest.class, byteData);
+        } else if (command == Command.CREATE_GROUP_RESPONSE) {
+            return (Packet) serializer.deserialize(CreateGroupResponse.class, byteData);
+        } else if (command == Command.JOIN_GROUP_REQUEST) {
+            return (Packet) serializer.deserialize(JoinGroupRequest.class, byteData);
+        } else if (command == Command.JOIN_GROUP_RESPONSE) {
+            return (Packet) serializer.deserialize(JoinGroupResponse.class, byteData);
         }
         return null;
     }
